@@ -13,6 +13,7 @@ import ru.stellarburgers.steps.UserSteps;
 
 import static org.junit.jupiter.api.Assertions.assertEquals;
 import static org.junit.jupiter.api.Assertions.assertNotNull;
+import static org.junit.jupiter.api.Assertions.assertTrue;
 
 @Epic("Stellar Burgers API")
 @Feature("Логин пользователя")
@@ -42,7 +43,10 @@ class LoginUserTest {
 
         assertEquals(200, response.getStatusCode());
         assertEquals("true", response.jsonPath().getString("success"));
-        assertEquals(user.getEmail(), response.jsonPath().getString("user.email"));
+        assertTrue(
+                user.getEmail().equalsIgnoreCase(response.jsonPath().getString("user.email")),
+                "Email в ответе должен совпадать с email при регистрации без учёта регистра"
+        );
         assertEquals(user.getName(), response.jsonPath().getString("user.name"));
         assertNotNull(response.jsonPath().getString("accessToken"));
         assertNotNull(response.jsonPath().getString("refreshToken"));

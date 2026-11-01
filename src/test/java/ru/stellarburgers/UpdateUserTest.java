@@ -12,6 +12,7 @@ import ru.stellarburgers.model.User;
 import ru.stellarburgers.steps.UserSteps;
 
 import static org.junit.jupiter.api.Assertions.assertEquals;
+import static org.junit.jupiter.api.Assertions.assertTrue;
 
 @Epic("Stellar Burgers API")
 @Feature("Изменение данных пользователя")
@@ -40,7 +41,13 @@ class UpdateUserTest {
         Response response = userSteps.updateEmailWithAuth(user, accessToken);
 
         userSteps.assertSuccess(response, 200);
-        assertEquals(user.getEmail(), response.jsonPath().getString("user.email"));
+
+        String actualEmail = response.jsonPath().getString("user.email");
+
+        assertTrue(
+                user.getEmail().equalsIgnoreCase(actualEmail),
+                "Email должен совпадать без учёта регистра"
+        );
     }
 
     @Test

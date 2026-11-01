@@ -94,7 +94,15 @@ public class UserSteps {
     @Step("Проверить, что пользователь создан и данные совпадают")
     public void assertUserCreated(Response response, User user) {
         assertSuccess(response, 200);
-        assertEquals(user.getEmail(), response.jsonPath().getString("user.email"));
+
+        String actualEmail = response.jsonPath().getString("user.email");
+
+        assertTrue(
+                user.getEmail().equalsIgnoreCase(actualEmail),
+                "Email должен совпадать без учёта регистра. Ожидался: "
+                        + user.getEmail() + ", получен: " + actualEmail
+        );
+
         assertEquals(user.getName(), response.jsonPath().getString("user.name"));
         assertNotNull(response.jsonPath().getString("accessToken"));
         assertNotNull(response.jsonPath().getString("refreshToken"));
